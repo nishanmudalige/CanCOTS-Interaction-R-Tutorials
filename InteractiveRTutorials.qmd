@@ -1,0 +1,104 @@
+---
+title: "Interactive R tutorials for learning and assessments"
+format: html
+bibliography: "InteractiveRTutorials.bib"
+author: 
+  - name: Léo Belzile
+    orcid: 0000-0002-9135-014X
+    email: leo.belzile@hec.ca
+  - name: David A. Campbell
+    orcid: 0000-0001-8722-4450
+    email: davecampbell@math.carleton.ca
+  - name: Kyran Cupido
+    orcid: 0000-0001-6984-4082
+    email: kcupido@stfx.ca
+  - name: Karen Huynh Wong
+    email: karen.huynhwong@utoronto.ca
+  - name: Nishan Mudalige
+    email: nishan.mudalige@utoronto.ca
+  - name: Aurélien Nicosia
+    email: aurelien.nicosia@mat.ulaval.ca  
+  - name: Emily Somerset
+    email: emily.somerset@mail.utoronto.ca
+  - name: Haochen Song
+    orcid: 0009-0006-7825-4993
+    email: fred.song@mail.utoronto.ca
+  - name: David Riegert
+    email: davidriegert@trentu.ca   
+  - name: Russell Steele
+    orcid: 0000-0003-1071-0914
+    email: russell.steele@mcgill.ca
+  - name: Irene Vbrik
+    email: irene.vrbik@ubc.ca
+abstract: > 
+   We review software tools for teaching, assessing and grading data analysis skills in the classroom using the **R** programming language.
+keywords: R programming language; automated feedback; 
+acknowledgment: The authors thank the participants of the Canadian Conference on Teaching Statistics (CanCOTS) for constructive feedback.
+---
+
+## Introduction
+
+Data science  majors popularity is at an all time high [@Pierson:2023], leading to strain on teaching resources. The increased enrollment, even in upper level undergraduate courses, increases the time spent on class management by instructors and limits their ability and that of teaching assistants to provide timely feedback on evaluations. The advent of generative artificial intelligence (genAI) also raises concerns about plagiarism. Due to these, instructors more and more default back to invigilated multiple choice exams. This is unfortunate because the questions that can be asked in such evaluations are not necessarily authentic.
+
+Data science is interdisciplinary by nature: standard tasks performed by analysts include exploratory data analysis and data wrangling, visualisation, model specification, estimation and validation, along with reporting. Designing assignments should therefore try to emulate those tasks while fostering statistical thinking [@Woodard.Lee.Woodard:2020]. For formative and summative assessment, it is often beneficial to have clear and consistent grading rubrics, which facilitate learning experience [@Poulos.Mahony:2008]. Automating feedback by parsing code, and using natural language processing (NLP) for comments can lead to efficiency gains [@Galassi.Vittorini:2021], while software solutions such as, e.g., Otter-Grader [@ottergrader:2025] facilitate sharing of grading rubrics, ensuring some consistency across instructors. Version control is now taught early on in introductory data science courses [e.g., @Timbers.Campbell.Lee:2022], and it is also becoming more frequent for class management [@ghclass;@Ricci.Medina.Dogucu:2024]. Solutions such as WebWork [@Berkova.Nemec:2020;@Zimmerman:2020] or R-exams [@Zeileis.Umlauf.Leisch:2014] gives instructors tools to effectively manage large-scale assessments using randomized questions databases. Automation of many of these grading and feedback tasks remains difficult because, while there are wrong answers, there is no unique correct one. Thus, setting up rubrics requires much upfront work to determine most likely errors. 
+
+
+Our purpose is to review software tools for teaching, assessing and grading data analysis skills in the classroom using the **R** programming language [@Rlang], a widely-used interpreted language which is popular among statisticians. There exists a wealth of contributed packages and software bundles to encourage semi-automation of tasks, generation of randomized evaluations, and tutorials. One key point is keeping the technical barriers low also for instructors, who can easily adapt their existing examples to a more interactive format. We consider several examples, notably:
+
+- in-class activities with limited entry-level barriers to programming via [`webR`](https://docs.r-wasm.org/webr/latest/) coupled with [Quarto Live](https://r-wasm.github.io/quarto-live/);
+- interactive tutorials via the `learnR` [@learnr;@Stoudt.Scotina.Luebke:2022] package, including description of randomization within, with gradated hints and support for multiple solutions [`gradethis`](https://pkgs.rstudio.com/gradethis/) and recovery of student responses using [`submitr`](https://dtkaplan.github.io/submitr/articles/using.html) or [`learnhash`](https://github.com/rundel/learnrhash).
+- semiautomatic tools for extracting student solutions for coding tasks and autograding, focusing on invariance of outputs. 
+
+The purpose of this paper is to review these three aspects critically with different points in mind, and to 
+
+- streamline use of these tools, by providing templates for users,
+- review and highlight functionalities (e.g., limitations in `learnr` for randomization due to pre-rendering),
+- suggest strategies for building unit tests and enabling informative feedback,
+- report on instructors experience implementing these tools in their classroom during the 2025--2026 academic year.
+
+
+## WebR interface and interactive online tutorials
+
+## Interactive tutorials for learning and assessment using `learnR`
+
+
+### Main initial takeaways
+
+- Best use is for interactive, low stakes tutorials
+- Works best for smaller code tasks to simplify feedback through `gradethis`
+- Student work can be tracked easily through `learnrhash`, as long as you need an existence proof and not a formal evaluation.
+
+Some issues to think about:
+
+- There are scoping issues which require careful planning when designing tutorials.
+- Security is potentially an issue with regards to what you can do, particularly if you are serving the learnr tutorial from a server.
+- It requires work to convert output from `learnr` hash into readable content for more formal grading.
+- For questions where the next part of a question depends on the previous part, you should give the student the answer. 
+
+
+## Autograding of code chunks from Rmarkdown and Quarto documents
+
+
+
+## Designing tutorials and assessment
+
+In the following section, we focus on some elements that are idiosyncratic to **R**, although much of the discussion has similar implications for any other programming language.
+
+- A simple way of getting around the cheating problem is through individualized data generation for which the procedure/script remains the same but answers differ. Of course, the drawback of this choice is that scripts could be shared between students. In data analysis problems, it is also possible to randomize the order of covariates, their name and their selection.
+- Asking the right questions: determining the variables and setup (e.g., test statistic, one-sided versus two-sided test, confidence level, conclusion) that can be randomized.
+- Generating context using generative AI.
+- Validating the results (e.g., numerical tolerance to rounding, differences for p-values for one-sided versus two-sided).
+
+
+Summative assessment of student answers
+
+- Open-ended questions are best checked through multiple choice questions that force users to generate plots or look at summary statistics and model output.
+- Focus on invariants and account for students degrees of freedom: e.g., in regression models, we can't check formulas because variable names may differ following data wrangling, the syntax and order of variables may be different (in **R** formula notation, `a*b` versus `b + a + a:b`). Likewise, contrast specification may change, as is the default engine class (e.g., `lm`  vs `glm` with `family=gaussian`) for fitting these models. We can however compare sample sizes, span of projection (hat) matrices, linear contrasts, tests comparing nested models, residuals and predictions, etc.
+- Depending on how prescriptive instructors are (for example, with naming of variables during tidying setup), we can validate more output.
+
+Students could simply save certain objects as lists and submit a .RData or a CSV file with their short answer. Automated checks can verify class or attributes, and check existence of the variable names; settings may also be set so that the environment is saved at the end of each question. This requires that the answers be numerical, or TRUE/FALSE. If the inputs are randomized, the instructor must run every data version to compare student answers with the solution key.
+
+If students submit a Quarto file that generates an html/PDF report. consider chopping a Quarto file with headers defining questions and sub-questions to facilitate extraction of code or run a text parser to extract comments or text.
+
+<!-- Parsing text (NLP): using LLM to generate the description of the plot, process language and check that it matches.
+-->
