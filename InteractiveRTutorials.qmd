@@ -12,9 +12,8 @@ author:
   - name: Kyran Cupido
     orcid: 0000-0001-6984-4082
     email: kcupido@stfx.ca
-  - name: Karen Huynh Wong
-    email: karen.huynhwong@utoronto.ca
   - name: Nishan Mudalige
+    orcid: 0000-0003-3981-9868
     email: nishan.mudalige@utoronto.ca
   - name: Aurélien Nicosia
     email: aurelien.nicosia@mat.ulaval.ca  
@@ -30,6 +29,8 @@ author:
     email: russell.steele@mcgill.ca
   - name: Irene Vbrik
     email: irene.vrbik@ubc.ca
+  - name: Karen Huynh Wong
+    email: karen.huynhwong@utoronto.ca
 abstract: > 
    We review software tools for teaching, assessing and grading data analysis skills in the classroom using the **R** programming language.
 keywords: R programming language; automated feedback; 
@@ -59,14 +60,152 @@ The purpose of this paper is to review these three aspects critically with diffe
 
 ## WebR interface and interactive online tutorials
 
-## Interactive tutorials for learning and assessment using `learnR`
+## Description of tools
 
++-------------+----------------------+----------------------+----------------------+
+| Tool        | Description          | Hosting              | Related packages     |
++=============+======================+======================+======================+
+| `webR`      | A version of R       | Can work with static | Useful for           |
+|             | compiled for the     | web hosting because  | lightweight,         |
+|             | browser and Node.js  | computation happens  | browser-based R      |
+|             | using WebAssembly.   | client-side,         | interactivity. It is |
+|             | It allows R code to  | although package     | conceptually         |
+|             | run in the user's    | support depends on   | different from       |
+|             | browser without an   | WebAssembly-         | standard `learnr`,   |
+|             | R server             | compatible R         | which usually        |
+|             | [@webRdocs].         | packages             | depends on Shiny.    |
+|             |                      | [@webRpackages;      |                      |
+|             |                      | @webRdocs].          |                      |
++-------------+----------------------+----------------------+----------------------+
+| `learnr`    | An R package for     | Standard `learnr`    | Provides the         |
+|             | turning R Markdown   | tutorials use        | tutorial framework   |
+|             | documents into       | `runtime:            | that can             |
+|             | interactive          | shiny_prerendered`,  | incorporate          |
+|             | tutorials with       | so they usually need | `gradethis` feedback |
+|             | narrative, code      | to run locally or on | and, in some         |
+|             | exercises, quizzes,  | a Shiny-capable      | workflows,           |
+|             | videos, and Shiny    | hosting platform     | `learnrhash`         |
+|             | components           | rather than as       | tracking.            |
+|             | [@learnr].           | ordinary static      |                      |
+|             |                      | pages [@learnr].     |                      |
++-------------+----------------------+----------------------+----------------------+
+| `gradethis` | An R package that    | Its deployment       | Extends `learnr` by  |
+|             | provides automated   | constraints          | adding automated     |
+|             | feedback for         | generally follow     | feedback to code     |
+|             | student exercises in | `learnr`, since it   | exercises.           |
+|             | `learnr` tutorials.  | is designed to run   |                      |
+|             | It can compare       | inside `learnr`      |                      |
+|             | student code to a    | tutorials            |                      |
+|             | model solution or    | [@gradethis].        |                      |
+|             | use custom grading   |                      |                      |
+|             | logic                |                      |                      |
+|             | [@gradethis].        |                      |                      |
++-------------+----------------------+----------------------+----------------------+
+| `Quarto`    | An open-source       | Can produce static   | Useful for           |
+|             | scientific and       | HTML outputs that    | publishing course    |
+|             | technical publishing | are suitable for     | materials, while     |
+|             | system for           | static hosting;      | `learnr` is more     |
+|             | documents, websites, | dynamic or live      | specialized for      |
+|             | blogs, books,        | interactive content  | interactive          |
+|             | presentations,       | may require an       | tutorials.           |
+|             | dashboards, and      | appropriate runtime  |                      |
+|             | other outputs        | or hosting           |                      |
+|             | [@quarto].           | environment          |                      |
+|             |                      | [@quarto].           |                      |
++-------------+----------------------+----------------------+----------------------+
+| `Other      |                      |                      |                      |
+| tools?`     |                      |                      |                      |
++-------------+----------------------+----------------------+----------------------+
+
+
+## User case
+
++-------------+----------------------+----------------------+----------------------+
+| Tool        | Use case summary     | Strengths            | Limitations /        |
+|             |                      |                      | comparison           |
++=============+======================+======================+======================+
+| `webR`      | Use when students    | Strong for static or | Less mature than     |
+|             | need to run R code   | mostly-static        | standard server-side |
+|             | directly in the      | websites because     | R workflows. The API |
+|             | browser without      | computation happens  | is under active      |
+|             | installing R or      | client-side. Useful  | development, some    |
+|             | connecting to an R   | for lightweight      | packages may not     |
+|             | server               | browser-based coding | work, and mobile     |
+|             | [@webRdocs].         | activities, demos,   | browsers may have    |
+|             |                      | and interactive      | memory limits        |
+|             |                      | examples.            | [@webRdocs].         |
+|             |                      |                      | Compared with        |
+|             |                      |                      | `learnr`, it is      |
+|             |                      |                      | better for static    |
+|             |                      |                      | hosting but less     |
+|             |                      |                      | specialized for      |
+|             |                      |                      | structured tutorials |
+|             |                      |                      | and feedback.        |
++-------------+----------------------+----------------------+----------------------+
+| `learnr`    | Use when you want a  | Strong for           | Standard `learnr`    |
+|             | guided interactive   | self-paced active    | tutorials use        |
+|             | tutorial with        | learning. Gives      | `runtime:            |
+|             | narrative, editable  | students a           | shiny_prerendered`,  |
+|             | code exercises,      | structured           | so they usually need |
+|             | quizzes, videos, and | environment where    | a Shiny-capable      |
+|             | Shiny components     | they read, run code, | environment rather   |
+|             | [@learnr].           | answer questions,    | than ordinary static |
+|             |                      | and receive          | hosting [@learnr].   |
+|             |                      | feedback. Works well | Compared with        |
+|             |                      | with `gradethis`.    | Quarto, it is more   |
+|             |                      |                      | specialized for      |
+|             |                      |                      | tutorials but less   |
+|             |                      |                      | general for course   |
+|             |                      |                      | websites, slides,    |
+|             |                      |                      | books, or reports.   |
++-------------+----------------------+----------------------+----------------------+
+| `gradethis` | Use when you want    | Strong for formative | It is not a general  |
+|             | automated feedback   | assessment. Can      | publishing tool or a |
+|             | on student code      | compare student code | standalone           |
+|             | inside a `learnr`    | to a model solution  | assessment system.   |
+|             | tutorial             | or use custom        | Its use is closely   |
+|             | [@gradethis].        | grading logic, which | tied to `learnr`, so |
+|             |                      | helps give targeted  | its hosting          |
+|             |                      | feedback for common  | constraints usually  |
+|             |                      | mistakes             | follow `learnr`.     |
+|             |                      | [@gradethis].        | Compared with        |
+|             |                      |                      | `learnr`, it is not  |
+|             |                      |                      | the tutorial         |
+|             |                      |                      | framework itself; it |
+|             |                      |                      | is the feedback      |
+|             |                      |                      | layer.               |
++-------------+----------------------+----------------------+----------------------+
+| `Quarto`    | Use when you want to | Strong for           | It is not primarily  |
+|             | create course notes, | publishing. Supports | an interactive       |
+|             | reports, slides,     | multiple languages,  | tutorial or grading  |
+|             | websites, blogs,     | including R, Python, | system. Static       |
+|             | books, dashboards,   | Julia, and           | outputs are easy to  |
+|             | or other             | Observable, and can  | host, but live       |
+|             | reproducible         | produce many output  | computation or rich  |
+|             | teaching materials   | formats such as      | interactivity may    |
+|             | [@quarto].           | HTML, PDF, Word,     | require additional   |
+|             |                      | slides, websites,    | tools or hosting.    |
+|             |                      | and books            | Compared with        |
+|             |                      | [@quarto].           | `learnr`, Quarto is  |
+|             |                      |                      | broader and better   |
+|             |                      |                      | for publishing;      |
+|             |                      |                      | `learnr` is better   |
+|             |                      |                      | for guided coding    |
+|             |                      |                      | tutorials.           |
++-------------+----------------------+----------------------+----------------------+
+
+
+## Interactive tutorials for learning and assessment using `learnR`
 
 ### Main initial takeaways
 
-- Best use is for interactive, low stakes tutorials
-- Works best for smaller code tasks to simplify feedback through `gradethis`
+- Best use is for interactive, low stakes tutorials.
+- Supports active learning since students learn by running code.
+- Good for formative assessment: useful for practice, readiness checks, lab prep, and review rather than formal high-stakes grading.
+- Works best for smaller code tasks to simplify feedback through `gradethis`.
+- Immediate feedback is available with `gradethis`.
 - Student work can be tracked easily through `learnrhash`, as long as you need an existence proof and not a formal evaluation.
+- The choice of hosting matters. Static tutorial `learnr` tutorials materials or pre-rendered R Markdown pages can be shared through GitHub Pages, but standard live interactive `learnr` tutorials require a Shiny-capable environment.
 
 Some issues to think about:
 
@@ -74,7 +213,7 @@ Some issues to think about:
 - Security is potentially an issue with regards to what you can do, particularly if you are serving the learnr tutorial from a server.
 - It requires work to convert output from `learnr` hash into readable content for more formal grading.
 - For questions where the next part of a question depends on the previous part, you should give the student the answer. 
-
+- `learnrhash` relies on Shiny server logic to collect the tutorial state and generate the copy-paste hash (`learnrhash` can not be implemented on GitHub pages as far as I am aware)
 
 ## Autograding of code chunks from Rmarkdown and Quarto documents
 
@@ -100,5 +239,60 @@ Students could simply save certain objects as lists and submit a .RData or a CSV
 
 If students submit a Quarto file that generates an html/PDF report. consider chopping a Quarto file with headers defining questions and sub-questions to facilitate extraction of code or run a text parser to extract comments or text.
 
-<!-- Parsing text (NLP): using LLM to generate the description of the plot, process language and check that it matches.
--->
+
+## Evidence from the classroom
+
+:::{.callout-caution}
+The list below has not been thoroughly checked and is not exhaustive.
+:::
+
+### `learnr`
+
++---------------------------------------+--------------------------------+--------------------------------------+-----------------------------------------------------------+
+| Source                                | Evidence type                  | Classroom / teaching context         | Summary                                                   |
++=======================================+================================+======================================+===========================================================+
+| Stoudt, Scotina, & Luebke,            | Peer-reviewed education        | Statistics and data science          | Discusses classroom uses of `learnr` tutorials for        |
+| “Supporting Statistics and Data       | article                        | education                            | statistics and data science instruction.                  |
+| Science Education with learnr”        |                                |                                      |                                                           |
+| [@stoudt2022learnr]                   |                                |                                      |                                                           |
++---------------------------------------+--------------------------------+--------------------------------------+-----------------------------------------------------------+
+| Engels, Grosjean, & Artus,            | Peer-reviewed classroom        | Biology students learning data       | Analyzes three years of course data and describes         |
+| “Teaching data science to students    | study                          | science                              | `learnr` tutorials as part of the course design.          |
+| in biology using R, RStudio and       |                                |                                      |                                                           |
+| Learnr” [@engels2023learnrbiology]    |                                |                                      |                                                           |
++---------------------------------------+--------------------------------+--------------------------------------+-----------------------------------------------------------+
+| Aberson, “Building Interactive        | Peer-reviewed teaching         | Psychological statistics             | Describes building online interactive tutorials with      |
+| Tutorials for Teaching Psychological  | article                        |                                      | videos, quizzes, and R analysis space using `learnr`.     |
+| Statistics Online with learnr”        |                                |                                      |                                                           |
+| [@aberson2021learnrpsych]             |                                |                                      |                                                           |
++---------------------------------------+--------------------------------+--------------------------------------+-----------------------------------------------------------+
+| Stoudt, “Using learnr Tutorials in    | Instructor classroom report /  | Introductory statistics pre-labs     | Practical classroom account of using `learnr` tutorials   |
+| an Intro Stats Class as Pre-Labs”     | blog                           |                                      | before lab sessions. Not peer-reviewed.                   |
+| [@stoudt2021introprelabs]             |                                |                                      |                                                           |
++---------------------------------------+--------------------------------+--------------------------------------+-----------------------------------------------------------+
+
+
+### `webR`
+
++---------------------------------------+--------------------------------+--------------------------------------+-----------------------------------------------------------+
+| Source                                | Evidence type                  | Classroom / teaching context         | Summary                                                   |
++=======================================+================================+======================================+===========================================================+
+| Perkel, “No installation required:    | Nature technology feature      | Education-related use case           | Discusses WebAssembly scientific computing and includes   |
+| how WebAssembly is changing           |                                |                                      | browser-based R as a way to reduce installation barriers. |
+| scientific computing”                 |                                |                                      | Not a classroom-outcomes study.                           |
+| [@perkel2024webassembly]              |                                |                                      |                                                           |
++---------------------------------------+--------------------------------+--------------------------------------+-----------------------------------------------------------+
+| Rennie, “Teaching statistics          | Conference talk / teaching     | Statistics teaching                  | Demonstrates how `webR` can be used to make teaching      |
+| interactively with webR”              | demonstration                  |                                      | materials more interactive with live coding examples.     |
+| [@rennie2023webr]                     |                                |                                      | Not peer-reviewed.                                        |
++---------------------------------------+--------------------------------+--------------------------------------+-----------------------------------------------------------+
+| White, “A brief introduction to       | Teaching blog / technical      | Client-side interactive lesson       | Shows how `webR` and Quarto can be used to let students   |
+| using WebR and Quarto for             | demonstration                  | materials                            | run R code in lesson materials without installing R.      |
+| client-side interactive lesson        |                                |                                      | Not peer-reviewed.                                        |
+| material” [@white2023webrquarto]      |                                |                                      |                                                           |
++---------------------------------------+--------------------------------+--------------------------------------+-----------------------------------------------------------+
+| Ward, “stan-playground: Run Stan      | Peer-reviewed software paper   | Browser-based statistical modeling   | Not a classroom study of `webR`, but relevant to          |
+| models directly in your browser”      |                                | for instruction                      | browser-based statistical computing for instruction;      |
+| [@ward2026stanplayground]             |                                |                                      | discusses integration with `webR`.                        |
++---------------------------------------+--------------------------------+--------------------------------------+-----------------------------------------------------------+
+
